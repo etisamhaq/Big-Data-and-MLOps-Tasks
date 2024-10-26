@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Entry for DynamoDB</title>
+</head>
+<body>
+    <h1>Data Entry for DynamoDB Tables</h1>
+
+    <!-- Form for Customers -->
+    <h2>Insert Customer</h2>
+    <form id="customerForm">
+        <label for="customer_id">Customer ID:</label>
+        <input type="text" id="customer_id"><br>
+        <label for="customer_zip">Zip Code Prefix:</label>
+        <input type="text" id="customer_zip"><br>
+        <label for="customer_city">City:</label>
+        <input type="text" id="customer_city"><br>
+        <label for="customer_state">State:</label>
+        <input type="text" id="customer_state"><br>
+        <button type="button" onclick="addCustomer()">Submit</button>
+    </form>
+
+    <!-- Form for Order Items -->
+    <h2>Insert Order Item</h2>
+    <form id="orderItemForm">
+        <label for="order_id">Order ID:</label>
+        <input type="text" id="order_id"><br>
+        <label for="product_id">Product ID:</label>
+        <input type="text" id="product_id"><br>
+        <label for="seller_id">Seller ID:</label>
+        <input type="text" id="seller_id"><br>
+        <label for="price">Price:</label>
+        <input type="number" id="price" step="0.01"><br>
+        <label for="shipping_charges">Shipping Charges:</label>
+        <input type="number" id="shipping_charges" step="0.01"><br>
+        <button type="button" onclick="addOrderItem()">Submit</button>
+    </form>
+
+    <!-- Form for Orders -->
+    <h2>Insert Order</h2>
+    <form id="orderForm">
+        <label for="order_id_order">Order ID:</label>
+        <input type="text" id="order_id_order"><br>
+        <label for="customer_id_order">Customer ID:</label>
+        <input type="text" id="customer_id_order"><br>
+        <label for="order_purchase_timestamp">Purchase Timestamp:</label>
+        <input type="datetime-local" id="order_purchase_timestamp"><br>
+        <label for="order_approved_at">Approved Timestamp:</label>
+        <input type="datetime-local" id="order_approved_at"><br>
+        <button type="button" onclick="addOrder()">Submit</button>
+    </form>
+
+    <!-- Form for Products -->
+    <h2>Insert Product</h2>
+    <form id="productForm">
+        <label for="product_id_product">Product ID:</label>
+        <input type="text" id="product_id_product"><br>
+        <label for="product_category_name">Category:</label>
+        <input type="text" id="product_category_name"><br>
+        <label for="product_weight_g">Weight (g):</label>
+        <input type="number" id="product_weight_g"><br>
+        <label for="product_length_cm">Length (cm):</label>
+        <input type="number" id="product_length_cm"><br>
+        <label for="product_height_cm">Height (cm):</label>
+        <input type="number" id="product_height_cm"><br>
+        <label for="product_width_cm">Width (cm):</label>
+        <input type="number" id="product_width_cm"><br>
+        <button type="button" onclick="addProduct()">Submit</button>
+    </form>
+
+    <script>
+        // Add Customer
+        function addCustomer() {
+            const customerData = {
+                customer_id: document.getElementById('customer_id').value,
+                customer_zip_code_prefix: document.getElementById('customer_zip').value,
+                customer_city: document.getElementById('customer_city').value,
+                customer_state: document.getElementById('customer_state').value
+            };
+
+            fetch('http://localhost:5000/add_customer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(customerData)
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message))
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Add Order Item
+        function addOrderItem() {
+            const orderItemData = {
+                order_id: document.getElementById('order_id').value,
+                product_id: document.getElementById('product_id').value,
+                seller_id: document.getElementById('seller_id').value,
+                price: parseFloat(document.getElementById('price').value),
+                shipping_charges: parseFloat(document.getElementById('shipping_charges').value)
+            };
+
+            fetch('http://localhost:5000/add_order_item', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orderItemData)
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message))
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Add Order
+        function addOrder() {
+            const orderData = {
+                order_id: document.getElementById('order_id_order').value,
+                customer_id: document.getElementById('customer_id_order').value,
+                order_purchase_timestamp: document.getElementById('order_purchase_timestamp').value,
+                order_approved_at: document.getElementById('order_approved_at').value
+            };
+
+            fetch('http://localhost:5000/add_order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orderData)
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message))
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Add Product
+        function addProduct() {
+            const productData = {
+                product_id: document.getElementById('product_id_product').value,
+                product_category_name: document.getElementById('product_category_name').value,
+                product_weight_g: parseFloat(document.getElementById('product_weight_g').value),
+                product_length_cm: parseFloat(document.getElementById('product_length_cm').value),
+                product_height_cm: parseFloat(document.getElementById('product_height_cm').value),
+                product_width_cm: parseFloat(document.getElementById('product_width_cm').value)
+            };
+
+            fetch('http://localhost:5000/add_product', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(productData)
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message))
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>

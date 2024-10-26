@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DynamoDB with Flask</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">DynamoDB with Flask API</h1>
+
+        <!-- Add Order Form -->
+        <h2>Add Order</h2>
+        <form id="orderForm" class="mb-5">
+            <div class="mb-3">
+                <label for="order_id" class="form-label">Order ID</label>
+                <input type="text" class="form-control" id="order_id" required>
+            </div>
+            <div class="mb-3">
+                <label for="product_id" class="form-label">Product ID</label>
+                <input type="text" class="form-control" id="product_id" required>
+            </div>
+            <div class="mb-3">
+                <label for="customer_id" class="form-label">Customer ID</label>
+                <input type="text" class="form-control" id="customer_id" required>
+            </div>
+            <div class="mb-3">
+                <label for="order_date" class="form-label">Order Date</label>
+                <input type="date" class="form-control" id="order_date" required>
+            </div>
+            <div class="mb-3">
+                <label for="quantity" class="form-label">Quantity</label>
+                <input type="number" class="form-control" id="quantity" required>
+            </div>
+            <div class="mb-3">
+                <label for="status" class="form-label">Status</label>
+                <input type="text" class="form-control" id="status" required>
+            </div>
+            <div class="mb-3">
+                <label for="total_price" class="form-label">Total Price</label>
+                <input type="number" class="form-control" id="total_price" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Order</button>
+        </form>
+
+        <!-- Query by Product ID -->
+        <h2>Query Orders by Product ID</h2>
+        <div class="mb-3">
+            <label for="query_product_id" class="form-label">Product ID</label>
+            <input type="text" class="form-control" id="query_product_id">
+        </div>
+        <button id="queryProductBtn" class="btn btn-success mb-3">Query Orders</button>
+
+        <!-- Query by Order ID and Date -->
+        <h2>Query Orders by Order ID and Date</h2>
+        <div class="mb-3">
+            <label for="query_order_id" class="form-label">Order ID</label>
+            <input type="text" class="form-control" id="query_order_id">
+        </div>
+        <div class="mb-3">
+            <label for="query_order_date" class="form-label">Order Date</label>
+            <input type="date" class="form-control" id="query_order_date">
+        </div>
+        <button id="queryOrderDateBtn" class="btn btn-success">Query Orders</button>
+
+        <!-- Results Section -->
+        <h2 class="mt-5">Results</h2>
+        <pre id="results"></pre>
+    </div>
+
+    <script>
+        // Function to add an order
+        document.getElementById('orderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const orderData = {
+                order_id: document.getElementById('order_id').value,
+                product_id: document.getElementById('product_id').value,
+                customer_id: document.getElementById('customer_id').value,
+                order_date: document.getElementById('order_date').value,
+                quantity: document.getElementById('quantity').value,
+                status: document.getElementById('status').value,
+                total_price: document.getElementById('total_price').value
+            };
+
+            fetch('/add_order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(orderData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('results').textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(error => console.error('Error:', error));
+        });
+
+
