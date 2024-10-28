@@ -1,0 +1,27 @@
+MySQL
+v1:
+    Users: 100, Posts: 1000, Likes: 10000, Comments: 5000
+    insertion time: 4.32 seconds
+    query avg time: 0.0063 seconds
+v2: 
+    Users: 1000, Posts: 10000, Likes: 100000, Comments: 50000
+    insertion time: 22.91 seconds
+    query avg time: 0.19452 seconds
+v3:
+    Users: 10000, Posts: 100000, Likes: 1000000, Comments: 500000
+    insertion time: 222.86 seconds
+    query avg time: 0.77462 seconds
+
+MSSQL
+v1:
+    Users: 100, Posts: 1000, Likes: 10000, Comments: 5000
+    insertion time: 6.43 seconds
+    query avg time: 0.01962 seconds
+v2:
+    Users: 1000, Posts: 10000, Likes: 100000, Comments: 50000
+    insertion time: 64.09 seconds
+    query avg time: 0.11978 seconds
+v3:
+    Users: 10000, Posts: 100000, Likes: 1000000, Comments: 500000
+    insertion time: 543.38 seconds
+    query avg time: 0.14506 seconds
