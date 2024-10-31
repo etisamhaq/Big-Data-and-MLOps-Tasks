@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook-like App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #4267B2;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        form {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 15px;
+            background-color: #f9f9f9;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="file"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4267B2;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #365899;
+        }
+        @media (max-width: 600px) {
+            .container {
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Create User</h1>
+        <form id="userForm">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="file" name="profile_pic" accept="image/*" required>
+            <button type="submit">Create User</button>
+        </form>
+
+        <h1>Create Post</h1>
+        <form id="postForm">
+            <input type="text" name="user_id" placeholder="User ID" required>
+            <textarea name="content" placeholder="Post Content" required></textarea>
+            <input type="file" name="media" accept="image/*,video/*">
+            <button type="submit">Create Post</button>
+        </form>
+
+        <h1>Add Comment</h1>
+        <form id="commentForm">
+            <input type="text" name="post_id" placeholder="Post ID" required>
+            <input type="text" name="user_id" placeholder="User ID" required>
+            <textarea name="comment_text" placeholder="Comment" required></textarea>
+            <button type="submit">Add Comment</button>
+        </form>
+    </div>
+
+    <script>
+        const apiBase = 'http://127.0.0.1:5000';
+
+        document.getElementById('userForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const response = await fetch(`${apiBase}/create_user`, {
+                method: 'POST',
+                body: formData
+            });
+            alert(await response.json().message);
+        };
+
+        document.getElementById('postForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const response = await fetch(`${apiBase}/create_post`, {
+                method: 'POST',
+                body: formData
+            });
+            alert(await response.json().message);
+        };
+
+        document.getElementById('commentForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const response = await fetch(`${apiBase}/add_comment`, {
+                method: 'POST',
+                body: JSON.stringify(Object.fromEntries(formData)),
+                headers: { 'Content-Type': 'application/json' }
+            });
+            alert(await response.json().message);
+        };
+    </script>
+</body>
+</html>
