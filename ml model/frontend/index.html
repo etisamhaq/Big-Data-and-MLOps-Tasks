@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentiment Analysis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .input-section {
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+            min-height: 100px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .positive {
+            background-color: #dff0d8;
+            border: 1px solid #d6e9c6;
+            color: #3c763d;
+        }
+
+        .negative {
+            background-color: #f2dede;
+            border: 1px solid #ebccd1;
+            color: #a94442;
+        }
+
+        .loader {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .loader::after {
+            content: '';
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .history {
+            margin-top: 30px;
+        }
+
+        .history-item {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sentiment Analysis</h1>
+        
+        <div class="input-section">
+            <textarea id="textInput" placeholder="Enter text to analyze..."></textarea>
+            <button id="analyzeBtn" onclick="analyzeSentiment()">Analyze Sentiment</button>
+        </div>
+
+        <div id="loader" class="loader"></div>
+        <div id="error" class="error"></div>
+        <div id="result" class="result"></div>
+
+        <div class="history">
+            <h2>Analysis History</h2>
+            <div id="historyList"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/predict';
+        let history = [];
+
+        async function analyzeSentiment() {
+            const textInput = document.getElementById('textInput');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const loader = document.getElementById('loader');
+            const result = document.getElementById('result');
+            const error = document.getElementById('error');
+
+            // Validate input
+            if (!textInput.value.trim()) {
+                showError('Please enter some text to analyze.');
+                return;
+            }
+
+            // Disable button and show loader
+            analyzeBtn.disabled = true;
+            loader.style.display = 'block';
+            result.style.display = 'none';
+            error.style.display = 'none';
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text: textInput.value })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                displayResult(data);
+                addToHistory(data);
+            } catch (err) {
+                showError('Error analyzing text. Please try again later.');
+                console.error('Error:', err);
+            } finally {
+                analyzeBtn.disabled = false;
+                loader.style.display = 'none';
+            }
+        }
+
+        function displayResult(data) {
+            const result = document.getElementById('result');
+            result.innerHTML = `
+                <h3>Analysis Result:</h3>
+                <p>Sentiment: ${data.sentiment}</p>
+                <p>Confidence: ${(data.confidence * 100).toFixed(1)}%</p>
+                <p>Response Time: ${(data.response_time * 1000).toFixed(2)}ms</p>
+            `;
+            result.className = `result ${data.sentiment.toLowerCase()}`;
+            result.style.display = 'block';
+        }
+
+        function addToHistory(data) {
+            history.unshift({
+                text: document.getElementById('textInput').value,
+                ...data,
+                timestamp: new Date().toLocaleString()
+            });
+
+            updateHistoryDisplay();
+        }
+
+        function updateHistoryDisplay() {
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = history.map(item => `
+                <div class="history-item ${item.sentiment.toLowerCase()}">
+                    <strong>Text:</strong> ${item.text}<br>
+                    <strong>Sentiment:</strong> ${item.sentiment}<br>
+                    <strong>Confidence:</strong> ${(item.confidence * 100).toFixed(1)}%<br>
+                    <strong>Time:</strong> ${item.timestamp}
+                </div>
+            `).join('');
+        }
+
+        function showError(message) {
+            const error = document.getElementById('error');
+            error.textContent = message;
+            error.style.display = 'block';
+        }
+
+        // Event listener for textarea
+        document.getElementById('textInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                analyzeSentiment();
+            }
+        });
+    </script>
+</body>
+</html>
