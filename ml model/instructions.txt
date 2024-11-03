@@ -1,0 +1,21 @@
+Multi-Container Application Development and Deployment 
+
+Develop a ml model application consisting of multiple containers.  
+
+DB Container: Run a MySQL database container, create a database named “Model_Logger” 
+and create one table named “Log” with the following columns: 
+ID
+Current_Date_Time
+Input_Params
+Output
+Response Time
+
+ML Serving API in Flask: Use a pre-trained ML model and build a serving API around it.
+The API should be able to accept input, generate output, log in to the database 
+(running on another container), and return the result to the user. 
+
+Also make a frontend for application.
+
+Build a docker-compose.yml for containers. 
+
+You can Run and stop the application through docker-compose. 
