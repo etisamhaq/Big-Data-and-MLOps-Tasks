@@ -1,0 +1,22 @@
+{
+    "_id": "user_id",
+    "name": "User Name",
+    "email": "user@example.com",
+    "posts": [
+        {
+            "post_id": "post_id",
+            "text": "Post content",
+            "likes": ["user_id_1", "user_id_2"],
+            "comments": [
+                {
+                    "comment_id": "comment_id",
+                    "user_id": "commenter_id",
+                    "text": "Comment text",
+                    "created_at": "timestamp"
+                }
+            ],
+            "created_at": "timestamp"
+        }
+    ],
+    "created_at": "timestamp"
+}
