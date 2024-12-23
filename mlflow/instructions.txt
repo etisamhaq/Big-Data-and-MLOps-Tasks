@@ -1,0 +1,25 @@
+Instructions:
+
+# Create new environment
+conda create -n mlflow-env python=3.11
+
+# Activate environment
+conda activate mlflow-env
+
+# Install required packages
+pip install mlflow scikit-learn pandas numpy
+
+# run the mlflow1.py
+python mlflow1.py
+
+# Now try serving the model
+mlflow models serve -m "runs:/<your-run-id>/model" -p 1234
+
+mlflow models serve -m "runs:/<your-run-id>/model" -p 1234 --env-manager=conda
+
+# run prediction.py
+python prediction.py
+
+
+
+
